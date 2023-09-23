@@ -1,0 +1,1 @@
+This is an ETHGlobal NYC project developed by Jin, Alex, Liam.
