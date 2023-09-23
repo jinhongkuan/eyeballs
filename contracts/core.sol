@@ -48,8 +48,8 @@ contract MyContract {
         return balance[nullifierHash];
     }
 
-    function decrementBalance(uint256 nullifierHash) internal {
-        balance[nullifierHash] = balance[nullifierHash] - 100; // Underflow protection by Solidity 0.8.x
+    function decrementBalance(uint256 nullifierHash, uint256 amount) internal {
+        balance[nullifierHash] = balance[nullifierHash] - amount; // Underflow protection by Solidity 0.8.x
         emit BalanceUpdated(nullifierHash, balance[nullifierHash]);
     }
 
@@ -57,12 +57,15 @@ contract MyContract {
         string memory signal,
         uint256 root,
         uint256 nullifierHash,
-        uint256[8] calldata proof
+        uint256[8] calldata proof,
+        uint256 referrerHash
     ) public {
+        uint256 cost = 100;
         if (!nullifierHashes[nullifierHash]) {
             nullifierHashes[nullifierHash] = true;
             addBalance(nullifierHash, 1000);
         }
+
         worldId.verifyProof(
             root,
             groupId,
@@ -71,9 +74,17 @@ contract MyContract {
             externalNullifierHash,
             proof
         );
+
         uint256 multiHash = getHash(nullifierHash, signal);
         if (!nullifierHashAndURL[multiHash]) {
-            decrementBalance(nullifierHash);
+            if (referrerHash != 0) {
+                uint256 referrerUrlHash = getHash(referrerHash, signal);
+                if (nullifierHashAndURL[referrerUrlHash]) {
+                    cost = 90;
+                    addBalance(referrerUrlHash, 70);
+                }
+            }
+            decrementBalance(nullifierHash, cost);
             nullifierHashAndURL[multiHash] = true;
         }
     }
