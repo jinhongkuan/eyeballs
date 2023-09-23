@@ -7,12 +7,12 @@ async function main() {
         .then(res => res.json() as Promise<{ key: string; value: string }[]>)
         .then(res => res.find(({ key }) => key === 'mumbai.id.worldcoin.eth').value)
 
-    const ContractFactory = await ethers.getContractFactory('Contract')
-    const contract = await ContractFactory.deploy(worldIDAddress, APP_ID, "open");
+    const EyeballsCoreFactory = await ethers.getContractFactory('EyeballsCore')
+    const eyeballsCore = await EyeballsCoreFactory.deploy(worldIDAddress, APP_ID, "open");
 
-    await contract.deployed()
+    await eyeballsCore.deployed()
 
-    console.log('Contract deployed to:', contract.address)
+    console.log('EyeballsCore deployed to:', eyeballsCore.address)
 }
 
 main().catch(error => {
