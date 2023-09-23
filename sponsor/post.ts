@@ -13,7 +13,7 @@ async function routes (fastify, options) {
     fastify.post('/post', async (request, reply) => {
 
       const params = request.body as {
-        signal: string, 
+        signal: BigNumberish, 
         root: BigNumberish,
         nullifierHash: BigNumberish, 
         proof: string,

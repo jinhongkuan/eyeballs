@@ -9,6 +9,7 @@ import { urlToAddressBytes } from "../src/stringToAddress";
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
+const sponsorAddress = "jalchemy-production.up.railway.app";
 
 const HoverableWrapper = styled.div<{
   borderRadius: number;
@@ -117,7 +118,11 @@ export function Eyewall() {
     };
   }, []);
 
-  const handleSuccess = (data: any) => {
+  const handleSuccess = async (data: any) => {
+    await fetch(`${sponsorAddress}/post`, {
+      method: "POST",
+      body: JSON.stringify(data)
+    })
     console.log("data", data);
     setOpen(false);
   };
