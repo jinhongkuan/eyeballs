@@ -73,7 +73,7 @@ contract EyeballsCore {
     // Get hash for nullifier and URL
     function getHash(
         uint256 nullifierHash,
-        string memory url
+        address url
     ) internal pure returns (uint256) {
         return uint256(keccak256(abi.encodePacked(nullifierHash, url)));
     }
@@ -117,7 +117,7 @@ contract EyeballsCore {
      * @param referrerHash The referrer hash
      */
     function payToView(
-        string memory signal,
+        address signal,
         uint256 root,
         uint256 nullifierHash,
         uint256[8] calldata proof,
