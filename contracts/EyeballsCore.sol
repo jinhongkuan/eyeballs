@@ -20,6 +20,7 @@ contract EyeballsCore {
     mapping(uint256 => bool) internal nullifierHashes;
     mapping(uint256 => bool) internal nullifierHashAndURL;
     mapping(uint256 => uint256) private balance;
+    
 
     event BalanceUpdated(uint256 indexed nullifierHash, uint256 newBalance);
     event ViewedStatusUpdated(uint256 indexed hash, bool status);
@@ -108,9 +109,10 @@ contract EyeballsCore {
                 // Check if the referrer has read (paid for) the content
                 if (nullifierHashAndURL[referrerUrlHash]) {
                     cost = REFERRER_COST;
-                    addBalance(referrerUrlHash, REFERRER_BONUS);
+                    addBalance(referrerHash, REFERRER_BONUS);
                 }
             }
+
             // Decrease the balance and mark the readerUrlHash as used
             decrementBalance(nullifierHash, cost);
             nullifierHashAndURL[readerUrlHash] = true;
