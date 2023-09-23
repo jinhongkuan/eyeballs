@@ -21,7 +21,7 @@
         "eslint-plugin-prettier": "^3.4.0",
         "eslint-plugin-promise": "^5.1.0",
         "ethereum-waffle": "^3.0.0",
-        "ethers": "^5.0.0",
+        "ethers": "^6.7.1",
         "hardhat": "^2.11.2",
         "hardhat-dependency-compiler": "^1.1.2",
         "hardhat-gas-reporter": "^1.0.4",
@@ -40,7 +40,10 @@
         "@zk-kit/protocols": "^1.11.1",
         "circomlibjs": "^0.1.7",
         "download": "^8.0.0",
-        "patch-package": "^6.4.7"
+        "fastify": "^4.23.2",
+        "fastify-cli": "^5.8.0",
+        "patch-package": "^6.4.7",
+        "zod": "^3.22.2"
     },
     "engines": {
         "node": ">=10.4.0"
@@ -52,7 +55,8 @@
         "format:check": "prettier --check ./",
         "lint": "eslint --ext .tsx,.ts,.js,.jsx ./",
         "typecheck": "tsc --noEmit --emitDeclarationOnly false --declaration false",
-        "spellcheck": "cspell **/*.{ts,js,tsx,json} -e **/node_modules/ -e /node_modules/"
+        "spellcheck": "cspell **/*.{ts,js,tsx,json} -e **/node_modules/ -e /node_modules/",
+        "start-sponsor": "node sponsor/server.js"
     },
     "config": {
         "paths": {
