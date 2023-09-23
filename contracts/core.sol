@@ -54,10 +54,9 @@ contract MyContract {
     }
 
     function verifyAndExecute(
-        address signal,
+        string memory signal,
         uint256 root,
         uint256 nullifierHash,
-        string memory url,
         uint256[8] calldata proof
     ) public {
         if (!nullifierHashes[nullifierHash]) {
@@ -72,10 +71,10 @@ contract MyContract {
             externalNullifierHash,
             proof
         );
-        uint256 hash = getHash(nullifierHash, url);
-        if (!nullifierHashAndURL[hash]) {
+        uint256 multiHash = getHash(nullifierHash, signal);
+        if (!nullifierHashAndURL[multiHash]) {
             decrementBalance(nullifierHash);
-            nullifierHashAndURL[hash] = true;
+            nullifierHashAndURL[multiHash] = true;
         }
     }
 }
