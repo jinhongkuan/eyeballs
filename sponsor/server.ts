@@ -3,6 +3,7 @@ const fastify = require('fastify')({
 })
 
 fastify.register(require('./post'))
+fastify.register(require('./health'))
 
 fastify.listen({ port: 3000 }, function (err, address) {
   if (err) {
