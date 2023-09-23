@@ -4,6 +4,7 @@ import { CredentialType, IDKitWidget } from "@worldcoin/idkit";
 import "../src/App.css";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { urlToAddressBytes } from "../src/stringToAddress";
 
 const glowHeight = 200;
 const glowWidth = 200;
@@ -123,7 +124,8 @@ export function Eyewall() {
   const handleVerify = (data: any) => {
     console.log("data", data);
   };
-
+  const signal = urlToAddressBytes(window.location.href);
+  console.log("SIGNAL");
   return (
     <HoverableWrapper ref={cardRef} borderRadius={10}>
       <Modal
@@ -151,7 +153,7 @@ export function Eyewall() {
               app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
               action="open" // this is your action name from the Developer Portal
               onSuccess={(data: any) => handleSuccess(data)} // callback when the modal is closed
-              signal={window.location.href}
+              signal={signal} // optional, defaults to null
               handleVerify={(data: any) => handleVerify(data)} // optional callback when the proof is received
               credential_types={["orb"] as CredentialType[]} // optional, defaults to ['orb']
               enableTelemetry // optional, defaulsts to false

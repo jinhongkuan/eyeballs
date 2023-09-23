@@ -39,6 +39,7 @@
         "@zk-kit/identity": "^1.4.1",
         "@zk-kit/protocols": "^1.11.1",
         "circomlibjs": "^0.1.7",
+        "crypto": "^1.0.1",
         "download": "^8.0.0",
         "fastify": "^4.23.2",
         "fastify-cli": "^5.8.0",
