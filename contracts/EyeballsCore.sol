@@ -154,9 +154,10 @@ contract EyeballsCore {
                 // Check if the referrer has read (paid for) the content
                 if (nullifierHashAndURL[referrerUrlHash]) {
                     cost = REFERRER_COST;
-                    addBalance(referrerUrlHash, REFERRER_BONUS);
+                    addBalance(referrerHash, REFERRER_BONUS);
                 }
             }
+
             // Decrease the balance and mark the readerUrlHash as used
             decrementBalance(nullifierHash, cost);
             nullifierHashAndURL[readerUrlHash] = true;
