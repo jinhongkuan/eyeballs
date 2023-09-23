@@ -1,4 +1,4 @@
-import { TransactionRequest, ethers } from "ethers";
+import {  ethers } from "ethers";
 
 const ARBITRIUM_RPC = process.env.ARBITRIUM_RPC; 
 
