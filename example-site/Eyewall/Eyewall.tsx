@@ -153,8 +153,6 @@ export function Eyewall() {
   };
   const handleVerify = (data: any) => {
     console.log("verify");
-    console.log("data", data);
-    setOpen(false);
   };
   const signal = urlToAddressBytes(window.location.href);
   return (
