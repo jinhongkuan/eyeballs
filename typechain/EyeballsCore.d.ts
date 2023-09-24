@@ -23,7 +23,7 @@ interface EyeballsCoreInterface extends ethers.utils.Interface {
   functions: {
     "boostBalance(uint256)": FunctionFragment;
     "getBalance(uint256)": FunctionFragment;
-    "payToView(string,uint256,uint256,uint256[8],uint256)": FunctionFragment;
+    "payToView(address,uint256,uint256,uint256[8],uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
