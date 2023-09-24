@@ -1,4 +1,4 @@
-import fastifyCors from "fastify-cors";
+import cors from "@fastify/cors";
 
 const fastify = require('fastify')({
   logger: true
@@ -6,7 +6,7 @@ const fastify = require('fastify')({
 
 fastify.register(require('./post'))
 fastify.register(require('./health'))
-fastify.register(fastifyCors, {
+fastify.register(cors, {
   "origin": "*",
   "credentials": "true",
   "preflightContinue": true,
@@ -15,7 +15,7 @@ fastify.register(fastifyCors, {
   "methods": "GET,POST,OPTIONS,PUT,DELETE,PATCH"
   });
 fastify.addHook('onSend', (request, reply, payload, next) => {
-    reply.header("Access-Control-Allow-Origin", "");
+    reply.header("Access-Control-Allow-Origin", "*");
     reply.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Cache-Control");
     next()
     });

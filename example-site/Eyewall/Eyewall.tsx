@@ -9,7 +9,7 @@ import { urlToAddressBytes } from "../src/stringToAddress";
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress = "http://jalchemy-production.up.railway.app";
+const sponsorAddress = "http://localhost:3000"; //"http://jalchemy-production.up.railway.app";
 
 const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
@@ -147,11 +147,19 @@ export function Eyewall() {
       card.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
+  const signal = urlToAddressBytes(window.location.href);
 
   const handleSuccess = async (data: any) => {
     await fetch(`${sponsorAddress}/post`, {
       method: "POST",
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        "root": data.merkle_root, 
+        "nullifierHash": data.nullifier_hash,
+        "proof": data.proof, 
+        "signal": signal, 
+        "referrerHash": 0,
+        
+      })
     })
     console.log("data", data);
     setOpen(false);
@@ -159,7 +167,6 @@ export function Eyewall() {
   const handleVerify = (data: any) => {
     console.log("verify");
   };
-  const signal = urlToAddressBytes(window.location.href);
   return (
     <>
       <Backdrop isvisible={open} />
