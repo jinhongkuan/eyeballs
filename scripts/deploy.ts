@@ -1,16 +1,18 @@
 import { ethers } from 'hardhat'
 
+const APP_ID = process.env.APP_ID;
+
 async function main() {
     const worldIDAddress = await fetch('https://developer.worldcoin.org/api/v1/contracts')
         .then(res => res.json() as Promise<{ key: string; value: string }[]>)
-        .then(res => res.find(({ key }) => key === 'staging.semaphore.wld.eth').value)
+        .then(res => res.find(({ key }) => key === 'mumbai.id.worldcoin.eth').value)
 
-    const ContractFactory = await ethers.getContractFactory('Contract')
-    const contract = await ContractFactory.deploy(worldIDAddress)
+    const EyeballsCoreFactory = await ethers.getContractFactory('EyeballsCore')
+    const eyeballsCore = await EyeballsCoreFactory.deploy(worldIDAddress, APP_ID, "open");
 
-    await contract.deployed()
+    await eyeballsCore.deployed()
 
-    console.log('Contract deployed to:', contract.address)
+    console.log('EyeballsCore deployed to:', eyeballsCore.address)
 }
 
 main().catch(error => {
