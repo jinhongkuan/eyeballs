@@ -1,15 +1,16 @@
 import { Box, Center, Flex, Space } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CredentialType, IDKitWidget } from "@worldcoin/idkit";
 import "../src/App.css";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { urlToAddressBytes } from "../src/stringToAddress";
+import { urlToAddressBytes } from "./stringToAddress";
+import React from "react";
 
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress = "http://localhost:3000"; //"http://jalchemy-production.up.railway.app";
+const sponsorAddress = "jalchemy-production.up.railway.app";
 
 const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
@@ -88,6 +89,7 @@ export function Eyewall() {
   const cardRef = useRef<HTMLDivElement>(null);
   const [boxPosition, setBoxPosition] = useState({ x: 0, y: 0 });
   const [boxVisible, setBoxVisible] = useState(false);
+  const [shouldClose, setShouldClose] = useState(false);
 
   useEffect(() => {
     setOpen(true);
@@ -147,26 +149,25 @@ export function Eyewall() {
       card.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
-  const signal = urlToAddressBytes(window.location.href);
 
   const handleSuccess = async (data: any) => {
-    await fetch(`${sponsorAddress}/post`, {
-      method: "POST",
-      body: JSON.stringify({
-        "root": data.merkle_root, 
-        "nullifierHash": data.nullifier_hash,
-        "proof": data.proof, 
-        "signal": signal, 
-        "referrerHash": 0,
-        
-      })
-    })
     console.log("data", data);
     setOpen(false);
   };
   const handleVerify = (data: any) => {
     console.log("verify");
+    setShouldClose(true);
+
+    fetch(`http://${sponsorAddress}/post`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }).then((res) => {
+      console.log("done", res);
+      setOpen(false);
+    });
   };
+  const signal = urlToAddressBytes(window.location.href);
+
   return (
     <>
       <Backdrop isvisible={open} />
@@ -187,19 +188,23 @@ export function Eyewall() {
                 </p>
               </Center>
               <p>This costs 1 view.</p>
-              <IDKitWidget
-                app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
-                action="open" // this is your action name from the Developer Portal
-                onSuccess={(data: any) => handleSuccess(data)} // callback when the modal is closed
-                signal={signal}
-                handleVerify={(data: any) => handleVerify(data)} // optional callback when the proof is received
-                credential_types={["orb"] as CredentialType[]} // optional, defaults to ['orb']
-                enableTelemetry // optional, defaulsts to false
-              >
-                {({ open }) => (
-                  <button onClick={open}>Verify with World ID and view</button>
-                )}
-              </IDKitWidget>
+              {!shouldClose && (
+                <IDKitWidget
+                  app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
+                  action="open" // this is your action name from the Developer Portal
+                  onSuccess={(data: any) => handleSuccess(data)} // callback when the modal is closed
+                  signal={signal}
+                  handleVerify={(data: any) => handleVerify(data)} // optional callback when the proof is received
+                  credential_types={["orb"] as CredentialType[]} // optional, defaults to ['orb']
+                  enableTelemetry // optional, defaulsts to false
+                >
+                  {({ open }) => (
+                    <button onClick={open}>
+                      Verify with World ID and view
+                    </button>
+                  )}
+                </IDKitWidget>
+              )}
               <Space h="md" />
               <Center>
                 <Link to="/">Home</Link>

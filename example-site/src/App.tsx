@@ -1,9 +1,10 @@
+import React from "react";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Text } from "@mantine/core";
 import { Home } from "./Home";
 import { Layout } from "./Layout";
-import { Eyewall } from "../Eyewall/Eyewall";
+import { Eyewall } from "./Eyewall";
 
 function App() {
   return (
