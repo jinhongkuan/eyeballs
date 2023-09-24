@@ -19,6 +19,8 @@ const Backdrop = styled.div<{ isvisible: boolean }>`
   right: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
+
+  ${(props) => !props.isvisible && "display: none;"}
 `;
 
 const HoverableWrapper = styled.div<{
@@ -65,7 +67,7 @@ const Glow = styled.div`
   pointer-events: none;
 `;
 
-const HoverableContainer = styled.div`
+const HoverableContainer = styled.div<{ isvisible: boolean }>`
   position: fixed;
   z-index: 3;
   top: 0;
@@ -76,6 +78,8 @@ const HoverableContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${(props) => !props.isvisible && "display: none;"}
 `;
 
 export function Eyewall() {
@@ -148,14 +152,15 @@ export function Eyewall() {
     setOpen(false);
   };
   const handleVerify = (data: any) => {
+    console.log("verify");
     console.log("data", data);
+    setOpen(false);
   };
   const signal = urlToAddressBytes(window.location.href);
-  console.log("SIGNAL");
   return (
     <>
       <Backdrop isvisible={open} />
-      <HoverableContainer>
+      <HoverableContainer isvisible={open}>
         <HoverableWrapper ref={cardRef} $borderradius={10}>
           <Box
             style={{
