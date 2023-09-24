@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom';
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress = "http://localhost:3000"; //"https://jalchemy-production.up.railway.app";
+const sponsorAddress = process.env.SPONSOR_ADDRESS!;
 
 const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
