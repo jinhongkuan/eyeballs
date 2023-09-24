@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Modal, Space } from "@mantine/core";
+import { Box, Center, Flex, Space } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import { CredentialType, IDKitWidget } from "@worldcoin/idkit";
 import "../src/App.css";
@@ -11,12 +11,25 @@ const glowWidth = 200;
 const glowBorderRadius = 100;
 const sponsorAddress = "jalchemy-production.up.railway.app";
 
+const Backdrop = styled.div<{ isVisible: boolean }>`
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+`;
+
 const HoverableWrapper = styled.div<{
-  borderRadius: number;
+  $borderradius: number;
 }>`
+  z-index: 3;
   display: inline-block;
   position: relative;
-  ${(props) => props.borderRadius && `border-radius: ${props.borderRadius}px`};
+  ${(props) =>
+    props.$borderradius && `border-radius: ${props.$borderradius}px`};
   transition-duration: 300ms;
   transition-property: transform, box-shadow;
   transition-timing-function: ease-out;
@@ -53,6 +66,19 @@ const Glow = styled.div`
   pointer-events: none;
 `;
 
+const HoverableContainer = styled.div`
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export function Eyewall() {
   const [open, setOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -87,8 +113,8 @@ export function Eyewall() {
 
       setBoxPosition({ x: boxXAdjusted, y: boxYAdjusted });
 
-      const maxRotationLeftRight = 25;
-      const maxRotationUpDown = 20;
+      const maxRotationLeftRight = 15;
+      const maxRotationUpDown = 12;
       const rotationUpDown = (center.y / bounds.height) * maxRotationUpDown;
       const rotationLeftRight =
         (center.x / bounds.width) * maxRotationLeftRight;
@@ -132,53 +158,51 @@ export function Eyewall() {
   const signal = urlToAddressBytes(window.location.href);
   console.log("SIGNAL");
   return (
-    <HoverableWrapper ref={cardRef} borderRadius={10}>
-      <Modal
-        opened={open}
-        onClose={() => setOpen(false)}
-        overlayProps={{
-          backgroundOpacity: 0.8,
-          blur: 5,
-        }}
-        closeOnClickOutside={false}
-        closeOnEscape={false}
-        withCloseButton={false}
-        centered
-        zIndex={2}
-        radius={"1rem"}
-        size={"md"}
-      >
-        <Box>
-          <Flex direction={"column"} justify={"center"}>
-            <Center>
-              <p>You need to verify your identity to view.</p>
-            </Center>
-            <p>This costs 1 view.</p>
-            <IDKitWidget
-              app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
-              action="open" // this is your action name from the Developer Portal
-              onSuccess={(data: any) => handleSuccess(data)} // callback when the modal is closed
-              signal={signal} // optional, defaults to null
-              handleVerify={(data: any) => handleVerify(data)} // optional callback when the proof is received
-              credential_types={["orb"] as CredentialType[]} // optional, defaults to ['orb']
-              enableTelemetry // optional, defaulsts to false
-            >
-              {({ open }) => (
-                <button onClick={open}>Verify with World ID and view</button>
-              )}
-            </IDKitWidget>
-            <Space h="md" />
-            <Center>
-              <Link to="/">Home</Link>
-            </Center>
-          </Flex>
-        </Box>
-      </Modal>
-      {boxVisible && (
-        <Glow
-          style={{ top: `${boxPosition.y}px`, left: `${boxPosition.x}px` }}
-        />
-      )}
-    </HoverableWrapper>
+    <>
+      <Backdrop isVisible={open} />
+      <HoverableContainer>
+        <HoverableWrapper ref={cardRef} $borderradius={10}>
+          <Box
+            style={{
+              cursor: "default",
+              background: "white",
+              padding: "12px 24px",
+              margin: "auto auto",
+            }}
+          >
+            <Flex direction={"column"} justify={"center"}>
+              <Center>
+                <p className="title">
+                  You need to verify your identity to view.
+                </p>
+              </Center>
+              <p>This costs 1 view.</p>
+              <IDKitWidget
+                app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
+                action="open" // this is your action name from the Developer Portal
+                onSuccess={(data: any) => handleSuccess(data)} // callback when the modal is closed
+                signal={signal}
+                handleVerify={(data: any) => handleVerify(data)} // optional callback when the proof is received
+                credential_types={["orb"] as CredentialType[]} // optional, defaults to ['orb']
+                enableTelemetry // optional, defaulsts to false
+              >
+                {({ open }) => (
+                  <button onClick={open}>Verify with World ID and view</button>
+                )}
+              </IDKitWidget>
+              <Space h="md" />
+              <Center>
+                <Link to="/">Home</Link>
+              </Center>
+            </Flex>
+          </Box>
+          {boxVisible && (
+            <Glow
+              style={{ top: `${boxPosition.y}px`, left: `${boxPosition.x}px` }}
+            />
+          )}
+        </HoverableWrapper>
+      </HoverableContainer>
+    </>
   );
 }
