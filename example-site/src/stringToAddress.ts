@@ -14,6 +14,6 @@ export const urlToAddressBytes = (url: string) => {
 
   // Step 3: Truncate to first 40 characters (20 bytes)
   const truncatedHex = hexHash.substring(0, 40);
-  console.log(truncatedHex);
+  
   return `0x${truncatedHex}`;
 };

@@ -50,3 +50,13 @@ div > a {
 a:hover {
   background-color: lightgrey;
 }
+
+.post {
+  width: 100%;
+  background-color: lightgray;
+  padding: 24px 32px;
+}
+
+.post a {
+  height: 100%;
+}

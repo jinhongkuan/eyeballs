@@ -1,15 +1,16 @@
 import { Box, Center, Flex, Space } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CredentialType, IDKitWidget } from "@worldcoin/idkit";
 import "../src/App.css";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { urlToAddressBytes } from "../src/stringToAddress";
+import React from "react";
 
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress = "http://localhost:3000"; //"jalchemy-production.up.railway.app";
+const sponsorAddress = "jalchemy-production.up.railway.app";
 
 const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
@@ -149,10 +150,10 @@ export function Eyewall() {
   }, []);
 
   const handleSuccess = async (data: any) => {
-    await fetch(`${sponsorAddress}/post`, {
+    await fetch(`http://${sponsorAddress}/post`, {
       method: "POST",
-      body: JSON.stringify(data)
-    })
+      body: JSON.stringify(data),
+    });
     console.log("data", data);
     setOpen(false);
   };
@@ -160,6 +161,7 @@ export function Eyewall() {
     console.log("verify");
   };
   const signal = urlToAddressBytes(window.location.href);
+
   return (
     <>
       <Backdrop isvisible={open} />
