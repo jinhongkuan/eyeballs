@@ -33,7 +33,11 @@ async function routes (fastify, options) {
         );
         const receipt = await provider.waitForTransaction(result.hash, 3, 10000);
 
+        if (receipt.status == 1)
         reply.code(200).send({receipt});
+        else 
+        reply.code(400).send({receipt});
+
         return; 
 
       } catch (error) {

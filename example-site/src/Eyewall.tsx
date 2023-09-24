@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom';
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress =  "https://jalchemy-production.up.railway.app";
+const sponsorAddress =  "http://localhost:3000"; //"https://jalchemy-production.up.railway.app";
 
 const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
@@ -217,6 +217,9 @@ export function Eyewall() {
   const handleSuccess = async (data: any) => {
     setShouldClose(true);
 
+    console.log("data", data);
+    console.log("signal", signal);
+
     fetch(`${sponsorAddress}/post`, {
       method: "POST",
       body: JSON.stringify({
@@ -271,7 +274,7 @@ export function Eyewall() {
               <Space h="md" />
               {!shouldClose && (
                 <IDKitWidget
-                  app_id="app_6082d75cebef0c0adc7713a83899c473" // obtained from the Developer Portal
+                  app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
                   action="open" // this is your action name from the Developer Portal
                   onSuccess={(data: any) => handleSuccess(data)} // callback when the modal is closed
                   signal={signal}
