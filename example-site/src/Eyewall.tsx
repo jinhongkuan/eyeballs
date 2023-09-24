@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Space } from "@mantine/core";
+import { Box, Center, Flex, Input, Space } from "@mantine/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CredentialType, IDKitWidget } from "@worldcoin/idkit";
 import "../src/App.css";
@@ -149,7 +149,7 @@ export function Eyewall() {
       card.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
-
+  const signal = urlToAddressBytes(window.location.href);
   const handleSuccess = async (data: any) => {
     console.log("data", data);
     setOpen(false);
@@ -160,13 +160,23 @@ export function Eyewall() {
 
     fetch(`http://${sponsorAddress}/post`, {
       method: "POST",
-      body: JSON.stringify(data),
-    }).then((res) => {
-      console.log("done", res);
-      setOpen(false);
-    });
+      body: JSON.stringify({
+        root: data.merkle_root,
+        nullifierHash: data.nullifier_hash,
+        proof: data.proof,
+        signal: signal,
+        referrerHash: "0",
+      }),
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => {
+        console.log("done", res);
+        setOpen(false);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
   };
-  const signal = urlToAddressBytes(window.location.href);
 
   return (
     <>
@@ -188,6 +198,8 @@ export function Eyewall() {
                 </p>
               </Center>
               <p>This costs 1 view.</p>
+              <Input placeholder="Referral code" />
+              <Space h="md" />
               {!shouldClose && (
                 <IDKitWidget
                   app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
