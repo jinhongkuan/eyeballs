@@ -6,11 +6,14 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { urlToAddressBytes } from "./stringToAddress";
 import React from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
+import { useLocation } from 'react-router-dom';
 
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress = "jalchemy-production.up.railway.app";
+const sponsorAddress = "http://localhost:3000"; //"https://jalchemy-production.up.railway.app";
 
 const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
@@ -84,13 +87,72 @@ const HoverableContainer = styled.div<{ isvisible: boolean }>`
   ${(props) => !props.isvisible && "display: none;"}
 `;
 
+const removeQueryParam = (url: string, param: string) => {
+  const urlObj = new URL(url);
+  const searchParams = new URLSearchParams(urlObj.search);
+
+  // Remove the specified parameter
+  searchParams.delete(param);
+
+  // Update the URL with the modified query string
+  urlObj.search = searchParams.toString();
+
+  return urlObj.toString();
+}
+
+const appendQueryParam = (url: string, param: string, value: string) => {
+  const urlObj = new URL(url);
+  const searchParams = new URLSearchParams(urlObj.search);
+
+  // Add the specified parameter
+  searchParams.append(param, value);
+
+  // Update the URL with the modified query string
+  urlObj.search = searchParams.toString();
+
+  return urlObj.toString();
+}
+function ReferButton ({children, nullifierHash, url}: {children: React.ReactNode, nullifierHash: string | null, url: string}) {
+  const [isTooltipVisible, setTooltipVisibility] = useState(false);
+  const [isIconVisible, setIconVisibility] = useState(true);
+  const referralURL = useMemo(()=> nullifierHash ? appendQueryParam(url, "referralCode", nullifierHash) : undefined, [nullifierHash]);
+
+  const toggleTooltip = async () => {
+    if (referralURL) {
+      await navigator.clipboard.writeText(referralURL);
+    setTooltipVisibility(!isTooltipVisible);
+
+    }
+
+  };
+return (
+  <div className="app">
+    {isIconVisible && (
+        <div 
+          className="share-logo" 
+          style={{ position: 'fixed', top: 0, right: 0, padding: '10px', cursor: 'pointer' }}
+          onClick={toggleTooltip}
+        >
+          <FontAwesomeIcon icon={faShareAlt} />
+          {isTooltipVisible && <div className="tooltip">Share this content</div>}
+        </div>
+      )}
+    {children}
+  </div>
+);
+
+}
 export function Eyewall() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const referralCode = queryParams.get('referralCode');
+
   const [open, setOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const [boxPosition, setBoxPosition] = useState({ x: 0, y: 0 });
   const [boxVisible, setBoxVisible] = useState(false);
   const [shouldClose, setShouldClose] = useState(false);
-
+  const [nullifierHash, setNullifierHash] = useState(String);
   useEffect(() => {
     setOpen(true);
   }, []);
@@ -149,36 +211,44 @@ export function Eyewall() {
       card.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
-  const signal = urlToAddressBytes(window.location.href);
+
+
+  const signal = urlToAddressBytes(removeQueryParam(window.location.href, "referralCode"));
   const handleSuccess = async (data: any) => {
     console.log("data", data);
-    setOpen(false);
-  };
-  const handleVerify = (data: any) => {
-    console.log("verify");
-    setShouldClose(true);
-
-    fetch(`http://${sponsorAddress}/post`, {
+    fetch(`${sponsorAddress}/post`, {
       method: "POST",
       body: JSON.stringify({
         root: data.merkle_root,
         nullifierHash: data.nullifier_hash,
         proof: data.proof,
         signal: signal,
-        referrerHash: 0,
+        referrerHash: referralCode ?? 0,
       }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
-      .then((res) => {
+      .then( (res) => {
         console.log("done", res);
-        setOpen(false);
+       if (res.ok) setOpen(false);
+        else 
+        res.json().then((resJson) => console.log("err", resJson ));
+
       })
       .catch((err) => {
         console.log("err", err);
       });
   };
+  const handleVerify = (data: any) => {
+    console.log("verify");
+    setShouldClose(true);
+    setNullifierHash(data.nullifierHash);
+    
+  };
 
   return (
-    <>
+    <ReferButton nullifierHash={nullifierHash} url={signal}>
       <Backdrop isvisible={open} />
       <HoverableContainer isvisible={open}>
         <HoverableWrapper ref={cardRef} $borderradius={10}>
@@ -193,15 +263,16 @@ export function Eyewall() {
             <Flex direction={"column"} justify={"center"}>
               <Center>
                 <p className="title">
-                  You need to verify your identity to view.
+                 {shouldClose ? "Confirming on-chain...":"Eyeballs Portal"}
                 </p>
               </Center>
-              <p>This costs 1 view.</p>
-              <Input placeholder="Referral code" />
+             <Center>
+             <p>{!shouldClose && (referralCode ? "This costs 0.9 View (Referral Discount)":"This costs 1.0 View")}</p>
+             </Center>
               <Space h="md" />
               {!shouldClose && (
                 <IDKitWidget
-                  app_id="app_staging_9b5d49b869afa5618a88c00937987526" // obtained from the Developer Portal
+                  app_id="app_6082d75cebef0c0adc7713a83899c473" // obtained from the Developer Portal
                   action="open" // this is your action name from the Developer Portal
                   onSuccess={(data: any) => handleSuccess(data)} // callback when the modal is closed
                   signal={signal}
@@ -211,7 +282,7 @@ export function Eyewall() {
                 >
                   {({ open }) => (
                     <button onClick={open}>
-                      Verify with World ID and view
+                      View
                     </button>
                   )}
                 </IDKitWidget>
@@ -229,6 +300,6 @@ export function Eyewall() {
           )}
         </HoverableWrapper>
       </HoverableContainer>
-    </>
+    </ReferButton>
   );
 }

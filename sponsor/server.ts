@@ -8,9 +8,6 @@ fastify.register(require('./post'))
 fastify.register(require('./health'))
 fastify.register(cors, {
   "origin": "*",
-  "credentials": "true",
-  "preflightContinue": true,
-  "optionsSuccessStatus": 201,
   "allowedHeaders": "Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range",
   "methods": "GET,POST,OPTIONS,PUT,DELETE,PATCH"
   });
