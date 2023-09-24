@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom';
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress = process.env.SPONSOR_ADDRESS!;
+const sponsorAddress =  "https://jalchemy-production.up.railway.app";
 
 const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
@@ -215,7 +215,8 @@ export function Eyewall() {
 
   const signal = urlToAddressBytes(removeQueryParam(window.location.href, "referralCode"));
   const handleSuccess = async (data: any) => {
-    console.log("data", data);
+    setShouldClose(true);
+
     fetch(`${sponsorAddress}/post`, {
       method: "POST",
       body: JSON.stringify({
@@ -241,8 +242,6 @@ export function Eyewall() {
       });
   };
   const handleVerify = (data: any) => {
-    console.log("verify");
-    setShouldClose(true);
     setNullifierHash(data.nullifierHash);
     
   };
