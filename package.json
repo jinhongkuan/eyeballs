@@ -43,6 +43,7 @@
         "download": "^8.0.0",
         "fastify": "^4.23.2",
         "fastify-cli": "^5.8.0",
+        "fastify-cors": "^6.1.0",
         "patch-package": "^6.4.7",
         "zod": "^3.22.2"
     },
