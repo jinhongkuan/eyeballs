@@ -165,8 +165,9 @@ export function Eyewall() {
         nullifierHash: data.nullifier_hash,
         proof: data.proof,
         signal: signal,
-        referrerHash: 0,
+        referrerHash: "0",
       }),
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
         console.log("done", res);
