@@ -10,7 +10,7 @@ const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
 
-const Backdrop = styled.div<{ isVisible: boolean }>`
+const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
   z-index: 2;
   top: 0;
@@ -154,7 +154,7 @@ export function Eyewall() {
   console.log("SIGNAL");
   return (
     <>
-      <Backdrop isVisible={open} />
+      <Backdrop isvisible={open} />
       <HoverableContainer>
         <HoverableWrapper ref={cardRef} $borderradius={10}>
           <Box
