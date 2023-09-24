@@ -11,7 +11,7 @@ const glowWidth = 200;
 const glowBorderRadius = 100;
 const sponsorAddress = "http://localhost:3000"; //"jalchemy-production.up.railway.app";
 
-const Backdrop = styled.div<{ isVisible: boolean }>`
+const Backdrop = styled.div<{ isvisible: boolean }>`
   position: fixed;
   z-index: 2;
   top: 0;
@@ -20,6 +20,8 @@ const Backdrop = styled.div<{ isVisible: boolean }>`
   right: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
+
+  ${(props) => !props.isvisible && "display: none;"}
 `;
 
 const HoverableWrapper = styled.div<{
@@ -66,7 +68,7 @@ const Glow = styled.div`
   pointer-events: none;
 `;
 
-const HoverableContainer = styled.div`
+const HoverableContainer = styled.div<{ isvisible: boolean }>`
   position: fixed;
   z-index: 3;
   top: 0;
@@ -77,6 +79,8 @@ const HoverableContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${(props) => !props.isvisible && "display: none;"}
 `;
 
 export function Eyewall() {
@@ -153,14 +157,13 @@ export function Eyewall() {
     setOpen(false);
   };
   const handleVerify = (data: any) => {
-    console.log("data", data);
+    console.log("verify");
   };
   const signal = urlToAddressBytes(window.location.href);
-  console.log("SIGNAL");
   return (
     <>
-      <Backdrop isVisible={open} />
-      <HoverableContainer>
+      <Backdrop isvisible={open} />
+      <HoverableContainer isvisible={open}>
         <HoverableWrapper ref={cardRef} $borderradius={10}>
           <Box
             style={{
