@@ -9,7 +9,7 @@ import { urlToAddressBytes } from "../src/stringToAddress";
 const glowHeight = 200;
 const glowWidth = 200;
 const glowBorderRadius = 100;
-const sponsorAddress = "jalchemy-production.up.railway.app";
+const sponsorAddress = "http://localhost:3000"; //"jalchemy-production.up.railway.app";
 
 const Backdrop = styled.div<{ isVisible: boolean }>`
   position: fixed;
